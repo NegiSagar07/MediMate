@@ -1,11 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './App.css';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Clinic from './components/Clinic';
 import Chemist from './components/Chemist';
 import Hospital from './components/Hospital';
 import Apparatus from './components/Apparatus';
+import Profile from './components/Profile';
 
 
 function App() {
@@ -34,6 +34,10 @@ function App() {
     {
       path : "/apparatus",
       element : <Apparatus/>
+    },
+    {
+      path : "/profile",
+      element : <Profile/>
     }
   ])
 
