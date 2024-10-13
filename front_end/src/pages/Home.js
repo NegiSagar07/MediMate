@@ -1,8 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import News from '../components/News';
+import Apparatus from '../components/Apparatus';
+import { useState } from 'react';
 
 const Home = () => {
+
+  const [showApparatus, setShowApparatus] = useState(false);
+
+  // Function to handle the click event for the Medical Apparatus link
+  const handleApparatusClick = () => {
+    setShowApparatus(true);
+  };
+
   return (
     <div className="w-screen h-auto bg-cover bg-no-repeat text-[#EEEEEE] font-serif">
       {/* Navbar */}
@@ -46,9 +56,12 @@ const Home = () => {
           <Link to="/hospitals" className="h-32 w-full bg-[#00ADB5] text-center flex items-center justify-center text-2xl md:text-3xl rounded-md shadow-xl transition-transform transform hover:scale-105 hover:bg-[#38bec3]">
             Hospitals
           </Link>
-          <Link to="/apparatus" className="h-32 w-full bg-[#00ADB5] text-center flex items-center justify-center text-2xl md:text-3xl rounded-md shadow-xl transition-transform transform hover:scale-105 hover:bg-[#38bec3]">
+          <button
+            onClick={handleApparatusClick}
+            className="h-32 w-full bg-[#00ADB5] text-center flex items-center justify-center text-2xl md:text-3xl rounded-md shadow-xl transition-transform transform hover:scale-105 hover:bg-[#38bec3]"
+          >
             Medical Apparatus
-          </Link>
+          </button>
           <Link to="/emergency" className="h-32 w-full bg-[#00ADB5] text-center flex items-center justify-center text-2xl md:text-3xl rounded-md shadow-xl transition-transform transform hover:scale-105 hover:bg-[#38bec3]">
             Emergency Services
           </Link>
@@ -57,6 +70,12 @@ const Home = () => {
           </Link>
         </div>
       </section>
+
+      {showApparatus && (
+        <div className="p-8 flex justify-center rounded-lg shadow-md">
+          <Apparatus />
+        </div>
+      )}
 
       {/* Health Tips */}
 

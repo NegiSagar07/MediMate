@@ -6,6 +6,15 @@ import Chemist from './components/Chemist';
 import Hospital from './components/Hospital';
 import Apparatus from './components/Apparatus';
 import Profile from './components/Profile';
+import Ctscan from './equipment/Ctscan';
+import Defibrillatro from './equipment/Defibrillatro';
+import Dialysis from './equipment/Dialysis';
+import Ecmo from './equipment/Ecmo';
+import Mri from './equipment/Mri';
+import Petscan from './equipment/Petscan';
+import Ultrasound from './equipment/Ultrasound';
+import Ventilators from './equipment/Ventilators';
+import Xray from './equipment/Xray';
 
 
 function App() {
@@ -38,6 +47,42 @@ function App() {
     {
       path : "/profile",
       element : <Profile/>
+    },
+    {
+      path : "/ctscan",
+      element : <Ctscan/>
+    },
+    {
+      path : "/defibrillator",
+      element : <Defibrillatro/>
+    },
+    {
+      path : "/dialysis",
+      element : <Dialysis/>
+    },
+    {
+      path : "/ecmo",
+      element : <Ecmo/>
+    },
+    {
+      path : "/mri",
+      element : <Mri/>
+    },
+    {
+      paht : "/petscan",
+      element : <Petscan/>
+    },
+    {
+      path : "/ultrasound",
+      element : <Ultrasound/>
+    },
+    {
+      path : "/ventilator",
+      element : <Ventilators/>
+    },
+    {
+      path : "/xray",
+      element : <Xray/>
     }
   ])
 
