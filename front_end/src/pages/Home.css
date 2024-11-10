@@ -1,0 +1,9 @@
+.background {
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    background-image: url('../images/bg.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  

@@ -1,6 +1,10 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcrypt'
-import Hospital from '../models/hospital.model.js'
+import Hospital from '../models/hospital.model.js';
+import Doctor from '../models/doctor.model.js';
+import Clinic from '../models/clinic.model.js';
+import Chemist from '../models/chemist.model.js';
+import Equipment from '../models/equipment.model.js';
 
 
 export const signup = async(req,res) => {
@@ -42,7 +46,7 @@ export const login = async(req,res) => {
 export const logout = (req, res) => {
     console.log("User logged out");
     res.status(200).json({ message: "Logout successful" });
-};
+}
 
 export const hospital = async (req, res) => {
     try {
@@ -88,4 +92,62 @@ export const hospital = async (req, res) => {
     }
     
 }
+
+export const doctor = async (req, res) => {
+    const {name, doctorType, expereince, workAt, age, dp} = req.body;
+    try {
+        if(name === "" || doctorType === "" || expereince === "" || workAt === "") {
+            return res.status(200).json({message : "please fill all required fields:"})
+        } 
+
+        const newDoctor = new Doctor({name, doctorType, expereince, workAt, age, dp});
+        await newDoctor.save();
+        res.status(200).json({message : "Doctor registered successfully"})
+        console.log("doctor created : ",name);
+    } catch (error) {
+        console.error("Error : ",error);
+    }
+
+}
+
+export const clinic = async (req, res) => {
+    const {name, latitude, longitude, address} = req.body;
+    try {
+        if(name === "" || latitude === "" || longitude === "" || address === "") {
+            return res.status(400).json({message : "please fill all fields"});
+        }
+
+        const newClinic = new Clinic({name, latitude, longitude, address});
+        await newClinic.save();
+    } catch (error) {
+        console.error("Error : ",error);
+    }
+}
   
+export const chemist = async (req, res) => {
+    const {name, latitude, longitude, address} = req.body;
+    try {
+        if(name === "" || latitude === "" || longitude === "" || address === "") {
+            return res.status(400).json({message : "please fill all fields"});
+        }
+
+        const newChemist = new Chemist({name, latitude, longitude, address});
+        await newChemist.save();
+    } catch (error) {
+        console.error("Error : ",error);
+    }
+}
+
+export const equipment = async (req, res) => {
+    const {name, latitude, longitude, address} = req.body;
+    try {
+        if(name === "" || latitude === "" || longitude === "" || address === "") {
+            return res.status(400).json({message : "please fill all fields"});
+        }
+
+        const newEquipment = new Equipment({name, latitude, longitude, address});
+        await newEquipment.save();
+    } catch (error) {
+        console.error("Error : ",error);
+    }
+}

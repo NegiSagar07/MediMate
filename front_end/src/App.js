@@ -15,6 +15,7 @@ import Petscan from './equipment/Petscan';
 import Ultrasound from './equipment/Ultrasound';
 import Ventilators from './equipment/Ventilators';
 import Xray from './equipment/Xray';
+import Service from './pages/Service';
 
 
 function App() {
@@ -83,6 +84,10 @@ function App() {
     {
       path : "/xray",
       element : <Xray/>
+    },
+    {
+      path : "services",
+      element: <Service/> 
     }
   ])
 

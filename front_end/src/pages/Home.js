@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import News from '../components/News';
 import Apparatus from '../components/Apparatus';
 import { useState } from 'react';
+import './Home.css';
 
 const Home = () => {
 
   const [showApparatus, setShowApparatus] = useState(false);
 
   // Function to handle the click event for the Medical Apparatus link
-  const handleApparatusClick = () => {
+  const handleApparatusClick = () => {  
     setShowApparatus(true);
   };
 
@@ -26,8 +26,9 @@ const Home = () => {
           <Link to="/hospital" className="hover:bg-[#00ADB5] px-4 py-2 rounded-md">Register Hospital</Link>
         </div>
       </nav>
-
+      <section className="background"></section>
       {/* Hero Section */}
+
       <section className="mt-10 px-4 md:px-12 flex flex-col items-center">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#222831] mb-4 text-center transition-transform transform hover:scale-105">
           Discover Nearby Healthcare Services

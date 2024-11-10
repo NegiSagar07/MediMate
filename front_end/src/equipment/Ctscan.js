@@ -2,7 +2,9 @@ import React from 'react'
 
 const Ctscan = () => {
   return (
-    <div>Ctscan</div>
+    <div>
+      
+    </div>
   )
 }
 
