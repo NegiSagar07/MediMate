@@ -19,6 +19,6 @@ const chemistSchema = new mongoose.Schema({
     }
 })
 
-const Chemist = mongoose.connect('Chemist',chemistSchema);
+const Chemist = mongoose.model('Chemist',chemistSchema);
 
 export default Chemist;             

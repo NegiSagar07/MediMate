@@ -1,8 +1,8 @@
-import Chemist from "../models/chemist.model";
-import Clinic from "../models/clinic.model";
-import Doctor from "../models/doctor.model";
-import Equipment from "../models/equipment.model";
-import Hospital from "../models/hospital.model";
+import Chemist from "../models/chemist.model.js";
+import Clinic from "../models/clinic.model.js";
+import Doctor from "../models/doctor.model.js";
+import Equipment from "../models/equipment.model.js";
+import Hospital from "../models/hospital.model.js";
 
 
 export const findDoctor = async(req, res) => {

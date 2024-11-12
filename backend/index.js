@@ -1,31 +1,31 @@
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 app.use(cors());
-dotenv.config();
 app.use(express.json());
 
-app.use('/api/auth',authRoutes);
+app.use('/api/auth', authRoutes);
 
-const connectDb = async() => {
-    try {
-        await mongoose.connect(process.env.DB_URL);
-        console.log("database connected successfully");
+const mongoURI = 'mongodb+srv://sagarnegi926:0qfEJ8Y25IBzGGLO@cluster0.8f2mc.mongodb.net/'
 
-        const PORT = 8000 || process.env.PORT
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        })
-    } catch (error) {
-        console.error("Error: ",error);
-    }
-}
-connectDb();
+mongoose.connect(mongoURI)
+  .then(() => {
+    console.log('Connected to MongoDB successfully!');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
+// Simple route to check server status
+app.get('/', (req, res) => {
+  res.send('Server is up and running');
+});
 
-
-
+// Start the server
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

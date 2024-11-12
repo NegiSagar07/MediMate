@@ -22,11 +22,11 @@ const doctorSchema = new mongoose.Schema({
         required : false,
     }, 
     dp : {
-        type : Image,
+        type : String,
         required : false,
     }
 })
 
-const Doctor = mongoose.connect('Doctor',doctorSchema);
+const Doctor = mongoose.model('Doctor',doctorSchema);
 
 export default Doctor;

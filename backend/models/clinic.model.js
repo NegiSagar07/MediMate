@@ -19,6 +19,6 @@ const clinicSchema = new mongoose.Schema({
     }
 })
 
-const Clinic = mongoose.connect('Clinic', clinicSchema);
+const Clinic = mongoose.model('Clinic', clinicSchema);
 
 export default Clinic;
