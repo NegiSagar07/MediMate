@@ -29,14 +29,10 @@ const hospitalSchema = new mongoose.Schema({
     type: Number, // Example: Average rating out of 5
     default: 0
   },
-  timings: {
-    openingTime: { type: String, required: true }, // Example: "08:00 AM"
-    closingTime: { type: String, required: true }  // Example: "08:00 PM"
-  },
   doctors: [{
-    name: { type: String, required: true },
-    specialization: { type: String, required: true },
-    experience: { type: Number, required: true } // Years of experience
+    name: { type: String, required: false },
+    specialization: { type: String, required: false },
+    experience: { type: Number, required: false } // Years of experience
   }],
   website: {
     type: String, // If they have a website
@@ -45,6 +41,10 @@ const hospitalSchema = new mongoose.Schema({
   registeredAt: {
     type: Date,
     default: Date.now
+  },
+  location : {
+    latitude : {type : Number, required : true},
+    longitude : {type : Number , required : true},
   }
 });
 

@@ -15,11 +15,11 @@ router.post('/clinic',clinic);
 router.post('/equipment',equipment);
 
 
-router.get('/doctor',findDoctor);
-router.get('/chemist',findChemist);
-router.get('/clinic',findClinic);
-router.get('/hospital',findHospital);
-router.get('/equipment',findEquipment);
+router.get('/nearby-doctor',findDoctor);
+router.get('/nearby-chemist',findChemist);
+router.get('/nearby-clinic',findClinic);
+router.get('/nearby-hospital',findHospital);
+router.get('/nearby-equipment',findEquipment);
 
 
 export default router;

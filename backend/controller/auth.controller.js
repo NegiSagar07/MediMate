@@ -50,14 +50,14 @@ export const logout = (req, res) => {
 
 export const hospital = async (req, res) => {
     try {
-        const {name, address, contact, services, facilities, rating, timings, doctors, website} = req.body;
-        if (!name || !address || !contact || !services || !timings || !doctors) {
+        const {name, address, contact, services, facilities, rating, doctors, website, location} = req.body;
+        if (!name || !address || !contact || !services || !doctors || !location) { // Updated to check location
             return res.status(400).json({ error: "Please provide all required fields." });
         }
         
         const newHospital = new Hospital({
             name,
-            address : {
+            address: {
                 street: address.street,
                 city: address.city,
                 state: address.state,
@@ -67,30 +67,30 @@ export const hospital = async (req, res) => {
                 phone: contact.phone,
                 email: contact.email
             },
-            services, // Array of services (e.g., ["X-ray", "CT-scan"])
+            services,
             facilities: {
                 bedsAvailable: facilities.bedsAvailable,
                 ICUAvailable: facilities.ICUAvailable,
                 emergencyAvailable: facilities.emergencyAvailable
             },
-            rating: rating || 0, // Default rating is 0 if not provided
-            timings: {
-                openingTime: timings.openingTime,
-                closingTime: timings.closingTime
-            },
-            doctors, // Array of doctors
-            website
+            rating: rating || 0,
+            doctors,
+            website,
+            location: {
+                latitude: location.latitude,
+                longitude: location.longitude
+            }
         });
         await newHospital.save();
+        console.log("hospital registered")
         res.status(201).json({
-            message : "hospital registered successfully",
-            hospital : newHospital
-        })
+            message: "Hospital registered successfully",
+            hospital: newHospital
+        });
     } catch (error) {
         console.error("Error registering hospital:", error);
         res.status(500).json({ error: "Server error. Please try again later." });
     }
-    
 }
 
 export const doctor = async (req, res) => {
@@ -105,7 +105,7 @@ export const doctor = async (req, res) => {
         res.status(200).json({message : "Doctor registered successfully"})
         console.log("doctor created : ",name);
     } catch (error) {
-        console.error("Error : ",error);
+        console.error("Error registerin doctor: ",error);
     }
 
 }

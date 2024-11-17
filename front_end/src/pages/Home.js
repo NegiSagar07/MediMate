@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Apparatus from '../components/Apparatus';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Home.css';
+import { ChevronDown } from 'lucide-react';
 
 const Home = () => {
 
@@ -12,6 +13,23 @@ const Home = () => {
   const handleApparatusClick = () => {  
     setShowApparatus(true);
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className="w-screen h-auto bg-cover bg-no-repeat text-[#EEEEEE] font-serif">
@@ -23,7 +41,44 @@ const Home = () => {
         <div className="hidden md:flex space-x-8">
           <Link to="/profile" className="hover:bg-[#00ADB5] px-4 py-2 rounded-md">Profile</Link>
           <Link to="/aboutus" className="hover:bg-[#00ADB5] px-4 py-2 rounded-md">About Us</Link>
-          <Link to="/hospital" className="hover:bg-[#00ADB5] px-4 py-2 rounded-md">Register Hospital</Link>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center space-x-1 hover:bg-[#00ADB5] px-4 py-2 rounded-md text-[#EEEEEE]"
+            >
+              <span>Register Business</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isOpen && (
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50">
+                <Link
+                  to="/register/hospital"
+                  className="block px-4 py-3 text-gray-800 hover:bg-[#00ADB5] hover:text-white transition-colors"
+                >
+                  Register Hospital
+                </Link>
+                <Link
+                  to="/register/chemist"
+                  className="block px-4 py-3 text-gray-800 hover:bg-[#00ADB5] hover:text-white transition-colors"
+                >
+                  Register Chemist
+                </Link>
+                <Link
+                  to="/register/clinic"
+                  className="block px-4 py-3 text-gray-800 hover:bg-[#00ADB5] hover:text-white transition-colors"
+                >
+                  Register Clinic
+                </Link>
+                <Link
+                  to="/register/doctor"
+                  className="block px-4 py-3 text-gray-800 hover:bg-[#00ADB5] hover:text-white transition-colors"
+                >
+                  Register as a Doctor
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
       <section className="background"></section>

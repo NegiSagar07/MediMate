@@ -1,215 +1,147 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import {useNavigate} from 'react-router-dom'
 
-const RegisterHospital = () => {
-  // Step 1: Initialize state for all fields
-  const [hospitalData, setHospitalData] = useState({
-    name: '',
-    address: { street: '', city: '', state: '', postalCode: '' },
-    contact: { phone: '', email: '' },
-    services: '',
-    facilities: { bedsAvailable: '', ICUAvailable: '', emergencyAvailable: false },
-    rating: '',
-    timings: { openingTime: '', closingTime: '' },
-    doctors: [{ name: '', specialization: '', experience: '' }],
-    website: ''
-  });
+const Hospital = () => {
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const mapRef = useRef(null);
+  const mapContainerRef = useRef(null);
 
-  // Step 2: Update state when inputs change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const navigate = useNavigate(); 
 
-    setHospitalData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+  const selectHospital = (hospital) => {
+    navigate('/about-hospital', {state : {hospital}});
 
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target;
+  }
 
-    setHospitalData((prevData) => ({
-      ...prevData,
-      address: {
-        ...prevData.address,
-        [name]: value
+  useEffect(() => {
+    const fetchNearbyHospital = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/auth/nearby-hospital');
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to fetch hospitals');
+        }
+
+        if (result.success && result.data) {
+          setLocations(result.data);
+        } else {
+          throw new Error('No data received from server');
+        }
+      } catch (error) {
+        setError(error.message || 'Error fetching hospitals');
+      } finally {
+        setLoading(false);
       }
-    }));
-  };
+    };
 
-  const handleContactChange = (e) => {
-    const { name, value } = e.target;
+    fetchNearbyHospital();
 
-    setHospitalData((prevData) => ({
-      ...prevData,
-      contact: {
-        ...prevData.contact,
-        [name]: value
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
       }
-    }));
-  };
+    };
+  }, []);
 
-  const handleFacilitiesChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    if (locations.length > 0 && !mapRef.current && mapContainerRef.current) {
+      try {
+        const map = L.map(mapContainerRef.current).setView([29.8547, 77.8937], 9);
+        mapRef.current = map;
 
-    setHospitalData((prevData) => ({
-      ...prevData,
-      facilities: {
-        ...prevData.facilities,
-        [name]: value
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const hospitalIcon = L.icon({
+          iconUrl: 'https://cdn-icons-png.flaticon.com/128/13721/13721284.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+        });
+
+        locations.forEach(hospital => {
+          const { latitude, longitude } = hospital.location || {};
+
+          if (latitude && longitude) {
+            const popupContent = `
+              <div class="hospital-popup">
+                <h3 class="font-semibold text-blue-600">${hospital.name || 'Unknown Hospital'}</h3>
+              </div>
+            `;
+
+            L.marker([latitude, longitude], { icon: hospitalIcon })
+              .addTo(map)
+              .bindPopup(popupContent)
+              .openPopup();
+          }
+        });
+      } catch (error) {
+        setError("Error initializing map");
       }
-    }));
-  };
-
-  const handleDoctorChange = (index, e) => {
-    const { name, value } = e.target;
-    const newDoctors = [...hospitalData.doctors];
-    newDoctors[index][name] = value;
-
-    setHospitalData((prevData) => ({
-      ...prevData,
-      doctors: newDoctors
-    }));
-  };
-
-  // Step 3: Submit form data
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const response = await fetch('/api/auth/hospital', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(hospitalData)
-      });
-      
-      if (response.ok) {
-        alert('Hospital registered successfully!');
-      } else {
-        alert('Error registering hospital.');
-      }
-    } catch (error) {
-      console.error('Error registering hospital:', error);
     }
-  };
+  }, [locations]);
 
-  // Step 4: Render the form
-  return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Register Hospital</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Hospital Name */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Hospital Name</label>
-          <input
-            type="text"
-            name="name"
-            value={hospitalData.name}
-            onChange={handleChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
+  if (loading) {
+    return <div className="text-center text-xl py-4">Loading hospitals...</div>;
+  }
 
-        {/* Address Section */}
-        <h3 className="text-xl font-semibold mb-2">Address</h3>
-        <div className="mb-4">
-          <label className="block text-gray-700">Street</label>
-          <input
-            type="text"
-            name="street"
-            value={hospitalData.address.street}
-            onChange={handleAddressChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700">City</label>
-            <input
-              type="text"
-              name="city"
-              value={hospitalData.address.city}
-              onChange={handleAddressChange}
-              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">State</label>
-            <input
-              type="text"
-              name="state"
-              value={hospitalData.address.state}
-              onChange={handleAddressChange}
-              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
-          </div>
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Postal Code</label>
-          <input
-            type="text"
-            name="postalCode"
-            value={hospitalData.address.postalCode}
-            onChange={handleAddressChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-
-        {/* Contact Section */}
-        <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
-        <div className="mb-4">
-          <label className="block text-gray-700">Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            value={hospitalData.contact.phone}
-            onChange={handleContactChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={hospitalData.contact.email}
-            onChange={handleContactChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-
-        {/* Services */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Services (comma-separated)</label>
-          <input
-            type="text"
-            name="services"
-            value={hospitalData.services}
-            onChange={handleChange}
-            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-
-        {/* Other fields like facilities, timings, doctors, and website can be added similarly */}
-
-        {/* Submit Button */}
+  if (error) {
+    return (
+      <div className="error-message bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
+        <h3 className="font-semibold text-lg">Error</h3>
+        <p>{error}</p>
         <button
-          type="submit"
-          className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700">
-          Register Hospital
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          onClick={() => window.location.reload()}
+          aria-label="Retry fetching hospitals"
+        >
+          Retry
         </button>
-      </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg space-y-6">
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-4">Nearby Hospitals</h2>
+      {locations.length === 0 ? (
+        <p className="text-center text-gray-600">No hospitals found in your area</p>
+      ) : (
+        <div 
+          ref={mapContainerRef} 
+          id="map"
+          className="h-96 w-full rounded-lg shadow-lg overflow-hidden mb-6"
+        />
+      )}
+      
+      {/* List of Nearby Hospitals */}
+      <ul className="space-y-4">
+        {locations.slice(0, 10).map((hospital, index) => (
+          <li key={index} className="p-4 bg-gray-100 rounded-lg shadow-md">
+            <button 
+              onClick={() => selectHospital(hospital)}
+              className="text-lg font-semibold text-gray-800"
+            >
+              {hospital.name || 'Unknown Hospital'}
+            </button>
+            <p className="text-gray-700">
+              <b>Address:</b> {hospital.address?.street || 'N/A'}, {hospital.address?.city || 'N/A'}
+            </p>
+            <p className="text-gray-700"><b>Phone:</b> {hospital.contact?.phone || 'N/A'}</p>
+            <p className="text-gray-700"><b>Email:</b> {hospital.contact?.email || 'N/A'}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default RegisterHospital;
+export default Hospital;

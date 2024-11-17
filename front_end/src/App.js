@@ -16,6 +16,12 @@ import Ultrasound from './equipment/Ultrasound';
 import Ventilators from './equipment/Ventilators';
 import Xray from './equipment/Xray';
 import Service from './pages/Service';
+import HospitalRegister from './business/HospitalRegister';
+import ClinicRegister from './business/ClinicRegister';
+import ChemistRegister from './business/ChemistRegister';
+import EquipmentRegister from './business/EquipmentRegister';
+import DoctorRegister from './business/DoctorRegister';
+import AboutHospital from './pages/AboutHospital';
 
 
 function App() {
@@ -34,7 +40,7 @@ function App() {
       element : <Clinic/>
     },
     {
-      path : "/hospital",
+      path : "/hospitals",
       element : <Hospital/>
     },
     {
@@ -86,8 +92,32 @@ function App() {
       element : <Xray/>
     },
     {
-      path : "services",
+      path : "/services",
       element: <Service/> 
+    },
+    {
+      path : "/register/hospital",
+      element : <HospitalRegister/>
+    },
+    {
+      path : "/register/clinic",
+      element : <ClinicRegister/>
+    }, 
+    {
+      path : "/register/chemist",
+      element : <ChemistRegister/>
+    },
+    {
+      path : "/register/equipment",
+      element : <EquipmentRegister/>,
+    },
+    {
+      path : "/register/doctor",
+      element : <DoctorRegister/>
+    },
+    {
+      path : "/about-hospital",
+      element : <AboutHospital/>
     }
   ])
 
